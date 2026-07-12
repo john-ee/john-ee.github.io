@@ -21,6 +21,8 @@ tagline: IT Engineer - Endpoint Management, Windows Research & other stuff
 description: >- # used by seo meta and the atom feed
   Welcome to my blog. I will ponder on various subject, IT related or not, and jot down my findings here.
 
+avatar: assets/img/Portrait.jpg
+
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
 url: "https://john-ee.github.io"
