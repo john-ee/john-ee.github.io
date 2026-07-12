@@ -14,6 +14,3 @@ Current projets :
 
 - GitHub: [john-ee](https://github.com/john-ee)
 - LinkedIn: [your handle](https://www.linkedin.com/in/john-nathan-hill-454aab10b/)
-
-> Add Markdown syntax content to file `_tabs/about.md`{: .filepath } and it will show up on this page.
-{: .prompt-tip }
