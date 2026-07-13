@@ -20,8 +20,6 @@ tagline: IT Engineer - Endpoint Management, Windows Research & other stuff
 
 description: Welcome to my blog. I will ponder on various subject, IT related or not, and jot down my findings here.
 
-avatar: /assets/img/Portrait.jpg
-
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
 url: "https://john-ee.github.io"
@@ -36,8 +34,6 @@ social:
   links:
     # The first element serves as the copyright owner's link
     - https://github.com/john-ee # change to your GitHub homepage
-    # Uncomment below to add more social links
-    # - https://www.facebook.com/username
     - https://www.linkedin.com/in/john-nathan-hill-454aab10b
 
 # Site Verification Settings
@@ -94,7 +90,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar:
+avatar: "/assets/img/Portrait.jpg"
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
