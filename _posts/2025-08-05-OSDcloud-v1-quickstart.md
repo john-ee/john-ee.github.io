@@ -1,18 +1,18 @@
 ---
 title: "OSDCloud v1 Quickstart"
 date: 2025-08-05 16:00:00 +0000
-categories: [Windows, Imaging, OSD, MDT]
+categories: [Windows, Imaging]
 tags: [OSDCloud, reset]
 draft: false
 ---
-# OSDCloud v1 (OSD Module) — Setup on a New Device
+## OSDCloud v1 (OSD Module) — Setup on a New Device
 
 According to osdcloud.com :
 > OSDCloud is a Community Tool for deploying Windows 11 (amd64 and arm64) over the internet without using local infrastructure. OSDCloud runs in WinPE using the OSDCloud or the OSD PowerShell Modules.
 
 This guide sets up a fresh Windows 11 machine as an **OSDCloud build host** — the machine you use to create the bootable ISO. This is a one-time setup per build machine.
 The bootable ISO will build your Windows Image on the device by :
-- Downloading the WIndows image directly from Microsoft
+- Downloading the Windows image directly from Microsoft
 - Pulling the drivers from the OEM's website
 This means no need to rebuild your ISO regularly but you need a connection to the network during the OSDCloud phase.
 
@@ -20,25 +20,26 @@ This means no need to rebuild your ISO regularly but you need a connection to th
 
 ---
 
-## Prerequisites
+### Prerequisites
 
 - Windows 10/11 or Windows Server, admin rights, internet access
 - ~10 GB free disk space for the workspace and ADK
+- Powershell terminal opened with elevated access
 
-## 1. Install the Windows ADK + WinPE add-on
+### 1. Install the Windows ADK + WinPE add-on
 
 Download both from: `https://learn.microsoft.com/en-us/windows-hardware/get-started/adk-install`
 
 Run as Administrator, in order:
 
 ```powershell
-adksetup.exe        # In the feature picker, select ONLY "Outils de déploiement" / "Deployment Tools"
+adksetup.exe        # In the feature picker, select ONLY "Deployment Tools"
 adkwinpesetup.exe   # WinPE add-on — separate installer, install after the ADK
 ```
 
 > Match the ADK version to the Windows build you'll be deploying where possible. Mismatches between ADK version and target OS build are the most common cause of template/ISO build failures.
 
-## 2. Install the OSD PowerShell module
+### 2. Install the OSD PowerShell module
 
 ```powershell
 # Run PowerShell as Administrator
@@ -54,7 +55,7 @@ Get-Command -Module OSD | Where-Object { $_.Name -match 'OSDCloud' }
 
 You should see: `New-OSDCloudTemplate`, `New-OSDCloudWorkspace`, `Edit-OSDCloudWinPE`, `New-OSDCloudISO`, `Start-OSDCloud`, `Start-OSDCloudGUI`.
 
-## 3. Build the base template
+### 3. Build the base template
 
 Use `-WinRE` instead of plain WinPE — WinRE has minimal but working WiFi support, which plain WinPE does not.
 
@@ -62,7 +63,7 @@ Use `-WinRE` instead of plain WinPE — WinRE has minimal but working WiFi suppo
 New-OSDCloudTemplate -WinRE
 ```
 
-## 4. Create the workspace
+### 4. Create the workspace
 
 The workspace is where the ISO gets assembled. Re-run this any time you want to start clean (it does not touch the template).
 
@@ -70,7 +71,7 @@ The workspace is where the ISO gets assembled. Re-run this any time you want to 
 New-OSDCloudWorkspace -WorkspacePath C:\OSDCloud
 ```
 
-## 5. (Recommended) Patch WinPE against Secure Boot certificate revocation - Untested
+### 5. (Recommended) Patch WinPE against Secure Boot certificate revocation - Untested
 
 *Rufus will warn you that the image is not fit for Secure Boot. Claude recommended the following steps but the built ISO worked without issues.*
 
@@ -84,9 +85,9 @@ New-OSDCloudTemplate -WinRE -CumulativeUpdate "C:\Path\To\windows11.0-kbXXXXXXX-
 New-OSDCloudWorkspace -WorkspacePath C:\OSDCloud
 ```
 
-## 6. Important operational notes
+### 6. Important operational notes
 
-- **`Edit-OSDCloudWinPE` is additive only and resets Startup config on every call.** There is no "clear drivers" switch. To start clean, delete and recreate the workspace (`Remove-Item C:\OSDCloud\Media -Recurse -Force` then `New-OSDCloudWorkspace` again), then run `Edit-OSDCloudWinPE` **once** with every parameter you need.
+- **`Edit-OSDCloudWinPE` is additive only and resets Startup config on every call.** There is no "clear drivers" switch. To start clean, delete and recreate the workspace (`Remove-Item C:\OSDCloud\* -Recurse -Force` then `New-OSDCloudWorkspace` again), then run `Edit-OSDCloudWinPE` **once** with every parameter you need.
 - **`New-OSDCloudISO` produces two files**: `OSDCloud.iso` (press-any-key prompt at boot) and `OSDCloud_NoPrompt.iso` (boots straight to WinPE, no keypress). Use the `_NoPrompt` version for a smoother unattended experience.
 - **Flashing to USB**: use [Rufus](https://rufus.ie) — select the ISO, GPT partition scheme for UEFI, click Start. Rufus may warn about Secure Boot revocation; either disable Secure Boot on the target device's BIOS temporarily, or apply the cumulative-update patch in step 5 to avoid it.
 
@@ -95,20 +96,20 @@ You're now ready to customize WinPE and build an ISO — see the two follow-up g
 - **Automated (Zero-Touch) ISO** — silent, no prompts, fixed configuration
 - **GUI ISO** — technician picks driver pack, language, edition, etc. at boot
 
-# OSDCloud — Automated (Zero-Touch) ISO
+## OSDCloud — Automated (Zero-Touch) ISO
 
 Builds an ISO that requires **no interaction** at boot: it auto-connects, wipes the disk, and installs a fixed OS/edition/language/build with no prompts.
 
 ---
 
-## 1. Start from a clean workspace
+### 1. Start from a clean workspace
 
 ```powershell
-Remove-Item -Path "C:\OSDCloud\Media" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "C:\OSDCloud\*" -Recurse -Force -ErrorAction SilentlyContinue
 New-OSDCloudWorkspace -WorkspacePath C:\OSDCloud
 ```
 
-## 2. (Optional) Export a WiFi profile
+### 2. (Optional) Export a WiFi profile
 
 Only needed if target devices won't have Ethernet during imaging. Run this while your build machine is connected to the target SSID:
 
@@ -128,15 +129,15 @@ Get-ChildItem C:\OSDCloud\*.xml   # confirm the exact filename
 >
 > The password is stored in **plaintext** inside this XML and inside the resulting ISO — treat the ISO/USB with the same care as a document containing your WiFi password.
 
-**Notes**: Initially it seemed to not have worked out for me but then it did work.
+**Note**: Initially it seemed to not have worked out for me but then it did work.
 
-## 3. Customize WinPE — drivers, silent config, branding
+### 3. Customize WinPE — drivers, silent config, branding
 
 Edit the `-StartOSDCloud` parameters to match what you want deployed. This example: Windows 11, 25H2, Enterprise, French, volume-activated, silent wipe, auto-restart.
 
 ```powershell
 Edit-OSDCloudWinPE `
-  -CloudDriver Dell, HP, WiFi `
+  -CloudDriver WiFi `
   -StartOSDCloud "-OSVersion 'Windows 11' -OSBuild 25H2 -OSEdition Enterprise -OSLanguage fr-fr -OSActivation Volume -ZTI -Restart" `
   -Brand "YourCompany"
 
@@ -150,20 +151,19 @@ Edit-OSDCloudWinPE `
 - `-OSActivation Volume` assumes KMS/MAK licensing (typical for Enterprise). Use `Retail` if devices activate via an embedded OEM key.
 - Set `-OSLanguage` explicitly — there's no prompt to pick it at runtime.
 
-## 4. Build the ISO
+### 4. Build the ISO
 
 ```powershell
 New-OSDCloudISO
-Get-ChildItem C:\OSDCloud\*.iso
 ```
 
 Use `OSDCloud_NoPrompt.iso` for the smoothest fully-hands-off boot.
 
-## 5. Flash to USB
+### 5. Flash to USB
 
 [Rufus](https://rufus.ie) → select USB drive → select `OSDCloud_NoPrompt.iso` → GPT partition scheme (UEFI) → **START**.
 
-## 6. Optional: light day-zero hardening before Autopilot enrollment finishes
+### 6. Optional: light day-zero hardening before Autopilot enrollment finishes
 
 If devices won't reach your Autopilot Enrollment Status Page (ESP) block-mode immediately, a small `SetupComplete.cmd` script (runs after imaging, before OOBE) can add defense-in-depth:
 
@@ -176,35 +176,37 @@ netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound
 
 This is a supplement, not a replacement, for enabling **ESP block-mode** in your Autopilot profile — that's the primary control that prevents device use before required policies land.
 
-## 7. Test before rollout
+### 7. Test before rollout
 
 Boot a scratch/VM device first and confirm: connects to network, wipes disk, installs the correct OS/edition/language, restarts into OOBE cleanly.
 
-# OSDCloud — GUI ISO (Technician Picks Options)
+![OSDCloud Downloading Windows 11 25H2 directly from Microsoft](/assets/img/2025-08-05-OSDcloud-v1-quickstart/001-automated-build.png)
+
+## OSDCloud — GUI ISO (Technician Picks Options)
 
 Builds an ISO that boots into the `OSDCloudGUI`, letting the technician choose Windows version, build, edition, language, and activation type at deployment time — instead of everything being fixed in advance.
 
 ---
 
-## 1. Start from a clean workspace
+### 1. Start from a clean workspace
 
 ```powershell
-Remove-Item -Path "C:\OSDCloud\Media" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "C:\OSDCloud\*" -Recurse -Force -ErrorAction SilentlyContinue
 New-OSDCloudWorkspace -WorkspacePath C:\OSDCloud
 ```
 
-## 2. Customize WinPE — drivers + GUI launch, no fixed config
+### 2. Customize WinPE — drivers + GUI launch, no fixed config
 
 ```powershell
 Edit-OSDCloudWinPE `
-  -CloudDriver Dell, HP, Lenovo, WiFi `
+  -CloudDriver WiFi `
   -StartOSDCloudGUI `
   -Brand "YourCompany"
 ```
 
 This gives the technician the **full, unrestricted GUI** at boot: every Windows version/build/edition/language/activation option is selectable, and the correct vendor driver pack is auto-detected and applied based on the device's actual make/model — no vendor flag needed.
 
-## 3. (Optional) Lock some fields while leaving others free
+### 3. (Optional) Lock some fields while leaving others free
 
 If you want to standardize on certain choices (e.g., always Windows 11 25H2 Enterprise, Volume-activated) but still let the technician freely pick the **language**, drop a config file into the workspace **after** step 2 and **before** building the ISO. Omit any key you want left open in the GUI.
 
@@ -227,20 +229,19 @@ New-Item -Path "C:\OSDCloud\Media\OSDCloud\Automate" -ItemType Directory -Force
 >
 > ⚠️ Not independently verified against every OSD module version — after building, boot the ISO once (a VM is fine) and confirm the GUI actually reflects the locked/open fields as expected before relying on it for real deployments.
 
-## 4. Build the ISO
+### 4. Build the ISO
 
 ```powershell
 New-OSDCloudISO
-Get-ChildItem C:\OSDCloud\*.iso
 ```
 
 Use `OSDCloud_NoPrompt.iso` to skip the initial "press any key" boot screen — the technician still gets the full `OSDCloudGUI` right after.
 
-## 5. Flash to USB
+### 5. Flash to USB
 
 [Rufus](https://rufus.ie) → select USB drive → select `OSDCloud_NoPrompt.iso` → GPT partition scheme (UEFI) → **START**.
 
-## 6. At deployment time
+### 6. At deployment time
 
 The technician:
 1. Boots the target device from USB
@@ -249,7 +250,9 @@ The technician:
 4. Confirms the disk wipe when prompted (not silent in this GUI mode)
 5. Walks away — OS, matching vendor drivers, and language pack install automatically
 
-## Notes
+### Notes
 
 - Since this mode isn't `-ZTI`, the technician **will** see a disk-wipe confirmation — this is expected and a useful safety check for a GUI-driven, human-attended workflow.
 - Vendor drivers are matched automatically per-device via SMBIOS detection — a single ISO works across mixed Dell/HP/Lenovo fleets without any per-model configuration.
+
+![OSDCloudGUI](/assets/img/2025-08-05-OSDcloud-v1-quickstart/002-osdgui.png)

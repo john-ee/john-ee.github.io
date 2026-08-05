@@ -1,7 +1,7 @@
 ---
 title: "What is MS-MDE2: The Protocol Behind Intune Enrollment"
 date: 2025-07-13 16:00:00 +0000
-categories: [MDM, Windows, Troubleshooting]
+categories: [Windows, MDM]
 tags: [ms-mde2, oma-dm]
 draft: true
 ---
