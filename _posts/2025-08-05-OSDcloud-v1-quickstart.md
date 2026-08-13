@@ -158,9 +158,9 @@ You can run your own scripts and installers by setting them in the right folder.
 New-OSDCloudWorkSpaceSetupCompleteTemplate
 ```
 
-This will create the SetupComplete scripts templates in the folder `C:\OSDCloud\Config\Scripts\SetupComplete`.
+This will create the SetupComplete scripts templates in the folder `C:\OSDCloud\Config\Scripts\SetupComplete`. SetupComplete.cmd calls SetupComplete.ps1
 
-Let's imagine we want to install VLC. Download the installer, copy it in the folder mentionned previously and add this command to the cmd or the ps1 script : 
+In this scenario, let's pre-install VLC. Download the installer, copy it in the folder `C:\OSDCloud\Config\Scripts\SetupComplete` and add this command to the script SetupComplete.ps1 : 
 ```powershell
 Start-Process "$PSScriptRoot\vlc-3.0.23-win64.exe" -ArgumentList "/S"
 ```
