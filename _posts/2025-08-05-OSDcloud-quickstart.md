@@ -1,13 +1,13 @@
 ---
-title: "OSDCloud v1 Quickstart"
+title: "OSDCloud Quickstart"
 date: 2025-08-05 16:00:00 +0000
 categories: [Windows, Imaging]
 tags: [OSDCloud, reset]
 draft: false
 ---
-## OSDCloud v1 (OSD Module) — Setup on a New Device
+## OSDCloud (OSD Module) — Setup on a New Device
 
-According to osdcloud.com :
+According to osdeploy.com :
 > OSDCloud is a Community Tool for deploying Windows 11 (amd64 and arm64) over the internet without using local infrastructure. OSDCloud runs in WinPE using the OSDCloud or the OSD PowerShell Modules.
 
 This guide sets up a fresh Windows 11 machine as an **OSDCloud build host** — the machine you use to create the bootable ISO. This is a one-time setup per build machine.
