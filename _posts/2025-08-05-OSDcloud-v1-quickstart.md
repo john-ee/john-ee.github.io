@@ -151,7 +151,23 @@ Edit-OSDCloudWinPE `
 - `-OSActivation Volume` assumes KMS/MAK licensing (typical for Enterprise). Use `Retail` if devices activate via an embedded OEM key.
 - Set `-OSLanguage` explicitly — there's no prompt to pick it at runtime.
 
-### 4. Build the ISO
+### 4. (Optional) Include some packages or installers
+
+You can run your own scripts and installers by setting them in the right folder. Run this command : 
+```powershell
+New-OSDCloudWorkSpaceSetupCompleteTemplate
+```
+
+This will create the SetupComplete scripts templates in the folder `C:\OSDCloud\Config\Scripts\SetupComplete`.
+
+Let's imagine we want to install VLC. Download the installer, copy it in the folder mentionned previously and add this command to the cmd or the ps1 script : 
+```powershell
+Start-Process "$PSScriptRoot\vlc-3.0.23-win64.exe" -ArgumentList "/S"
+```
+
+This process is applicable to the GUI ISO.
+
+### 5. Build the ISO
 
 ```powershell
 New-OSDCloudISO
@@ -159,22 +175,23 @@ New-OSDCloudISO
 
 Use `OSDCloud_NoPrompt.iso` for the smoothest fully-hands-off boot.
 
-### 5. Flash to USB
+**Note:** If you included files in step 5, you can verify there are present with the following commands :
+```powershell
+# Mount the ISO (returns a drive letter, like a virtual DVD)
+$Mount = Mount-DiskImage -ImagePath "C:\OSDCloud\OSDCloud_NoPrompt.iso" -PassThru
+$DriveLetter = ($Mount | Get-Volume).DriveLetter
+Write-Host "Mounted at ${DriveLetter}:"
 
-[Rufus](https://rufus.ie) → select USB drive → select `OSDCloud_NoPrompt.iso` → GPT partition scheme (UEFI) → **START**.
+# Browse to confirm your SetupComplete folder is actually in there
+Get-ChildItem "${DriveLetter}:\OSDCloud\Config\Scripts\SetupComplete" -Recurse -ErrorAction SilentlyContinue
 
-### 6. Optional: light day-zero hardening before Autopilot enrollment finishes
-
-If devices won't reach your Autopilot Enrollment Status Page (ESP) block-mode immediately, a small `SetupComplete.cmd` script (runs after imaging, before OOBE) can add defense-in-depth:
-
-```cmd
-manage-bde -on C: -RecoveryPassword
-netsh advfirewall set allprofiles state on
-netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound
-"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -SignatureUpdate
+# Once done checking, unmount it
+Dismount-DiskImage -ImagePath "C:\OSDCloud-Interactive\OSDCloud_NoPrompt.iso"
 ```
 
-This is a supplement, not a replacement, for enabling **ESP block-mode** in your Autopilot profile — that's the primary control that prevents device use before required policies land.
+### 6. Flash to USB
+
+[Rufus](https://rufus.ie) → select USB drive → select `OSDCloud_NoPrompt.iso` → GPT partition scheme (UEFI) → **START**.
 
 ### 7. Test before rollout
 
