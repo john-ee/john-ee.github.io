@@ -1,5 +1,5 @@
 ---
-title: "OSDCloud Quickstart"
+title: "OSDCloud v1 Quickstart"
 date: 2025-08-05 16:00:00 +0000
 categories: [Windows, Imaging]
 tags: [OSDCloud, reset]
@@ -16,7 +16,7 @@ The bootable ISO will build your Windows Image on the device by :
 - Pulling the drivers from the OEM's website
 This means no need to rebuild your ISO regularly but you need a connection to the network during the OSDCloud phase.
 
-> **Module note:** This guide uses the `OSD` module (sometimes called "OSDCloud v1"), which contains the mature `New-OSDCloudTemplate` / `Edit-OSDCloudWinPE` / `New-OSDCloudISO` workflow. Do **not** install the standalone `OSDCloud` or `OSDeploy` modules from the PowerShell Gallery for this workflow — those are a separate, newer preview toolchain with different commands and a hard expiration date.
+> **Module note:** This guide uses the `OSD` module (sometimes called "OSDCloud v1"), which contains the mature `New-OSDCloudTemplate` / `Edit-OSDCloudWinPE` / `New-OSDCloudISO` workflow. Do **not** install the standalone `OSDCloud` or `OSDeploy` modules from the PowerShell Gallery for this workflow — those are a separate, newer preview toolchain with different commands and a hard expiration date. [OSD on PowerShellGallery](https://www.powershellgallery.com/packages/OSD/26.8.1.1)
 
 ---
 
