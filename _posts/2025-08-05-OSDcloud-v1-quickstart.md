@@ -109,29 +109,7 @@ Remove-Item -Path "C:\OSDCloud\*" -Recurse -Force -ErrorAction SilentlyContinue
 New-OSDCloudWorkspace -WorkspacePath C:\OSDCloud
 ```
 
-### 2. (Optional) Export a WiFi profile
-
-Only needed if target devices won't have Ethernet during imaging. Run this while your build machine is connected to the target SSID:
-
-```powershell
-netsh wlan export profile name="YourSSID" key=clear folder=C:\OSDCloud
-Get-ChildItem C:\OSDCloud\*.xml   # confirm the exact filename
-```
-
-> ⚠️ **Known issue**: the built-in `-WifiProfile` parameter on `Edit-OSDCloudWinPE` does not reliably place the file where the runtime script expects it (`X:\OSDCloud\WifiProfile.xml`) in all module versions. If your test boot doesn't auto-connect, stage the file manually and connect via a startup command instead:
->
-> ```powershell
-> New-Item -Path "C:\OSDCloud\Media\OSDCloud" -ItemType Directory -Force
-> Copy-Item "C:\OSDCloud\Wi-Fi-YourSSID.xml" -Destination "C:\OSDCloud\Media\OSDCloud\WifiProfile.xml" -Force
-> ```
->
-> Then reference it explicitly with `-StartPSCommand` in step 3 (see the commented-out line).
->
-> The password is stored in **plaintext** inside this XML and inside the resulting ISO — treat the ISO/USB with the same care as a document containing your WiFi password.
-
-**Note**: Initially it seemed to not have worked out for me but then it did work.
-
-### 3. Customize WinPE — drivers, silent config, branding
+###23. Customize WinPE — drivers, silent config, branding
 
 Edit the `-StartOSDCloud` parameters to match what you want deployed. This example: Windows 11, 25H2, Enterprise, French, volume-activated, silent wipe, auto-restart.
 
@@ -151,7 +129,7 @@ Edit-OSDCloudWinPE `
 - `-OSActivation Volume` assumes KMS/MAK licensing (typical for Enterprise). Use `Retail` if devices activate via an embedded OEM key.
 - Set `-OSLanguage` explicitly — there's no prompt to pick it at runtime.
 
-### 4. (Optional) Include some packages or installers
+### 3. (Optional) Include some packages or installers
 
 You can run your own scripts and installers by setting them in the right folder. Run this command : 
 ```powershell
@@ -167,7 +145,7 @@ Start-Process "$PSScriptRoot\vlc-3.0.23-win64.exe" -ArgumentList "/S"
 
 This process is applicable to the GUI ISO.
 
-### 5. Build the ISO
+### 4. Build the ISO
 
 ```powershell
 New-OSDCloudISO
@@ -189,11 +167,11 @@ Get-ChildItem "${DriveLetter}:\OSDCloud\Config\Scripts\SetupComplete" -Recurse -
 Dismount-DiskImage -ImagePath "C:\OSDCloud-Interactive\OSDCloud_NoPrompt.iso"
 ```
 
-### 6. Flash to USB
+### 5. Flash to USB
 
 [Rufus](https://rufus.ie) → select USB drive → select `OSDCloud_NoPrompt.iso` → GPT partition scheme (UEFI) → **START**.
 
-### 7. Test before rollout
+### 6. Test before rollout
 
 Boot a scratch/VM device first and confirm: connects to network, wipes disk, installs the correct OS/edition/language, restarts into OOBE cleanly.
 
