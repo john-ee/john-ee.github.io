@@ -1,6 +1,6 @@
 ---
 title: "Event Viewer Queries Quickstart"
-date: 2025-08-19 13:00:00 +0000
+date: 2025-08-18 13:00:00 +0000
 categories: [Windows, Troubleshooting]
 tags: [wevtutil, event viewer, quickstart]
 draft: false
