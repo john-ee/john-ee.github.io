@@ -63,7 +63,7 @@ package.installed_packages
 | summarize c = count() by device.name, package.name, package.version, device.login.last_login_user_name
 ```
 
-**Get all the events in the past 7 days of a specific device**
+**Get per-application resource and network usage for a single device (7 days)**
 ```
 execution.events during past 7d
 | where device.name == "PC001"
