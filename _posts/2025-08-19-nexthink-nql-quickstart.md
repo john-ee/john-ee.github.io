@@ -6,7 +6,7 @@ tags: [NexThink, NQL, quickstart]
 draft: false
 ---
 
-# Nexthink NQL Quick Start Guide
+## Intro
 
 NQL (Nexthink Query Language) is used in the **Investigations** module to query device, user, and application data. Queries are built as a pipeline of clauses chained with `|`.
 

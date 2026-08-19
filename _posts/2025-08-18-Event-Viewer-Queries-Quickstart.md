@@ -6,7 +6,7 @@ tags: [wevtutil, event viewer, quickstart]
 draft: false
 ---
 
-# Event Viewer Queries Quickstart
+## Intro
 The event viewer is one of the most important tools to troubleshoot issues. Whether it's locally on a device or after a severe crash and you pull out the disk, using wevtutil is useful skill.
 
 Extract a time-windowed slice of a `.evtx` log without opening Event Viewer.
