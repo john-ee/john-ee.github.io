@@ -2,7 +2,7 @@
 title: "OSDCloud v1 Quickstart"
 date: 2025-08-05 16:00:00 +0000
 categories: [Windows, Imaging]
-tags: [OSDCloud, reset]
+tags: [OSDCloud, reset, quickstart]
 draft: false
 ---
 ## OSDCloud (OSD Module) — Setup on a New Device
