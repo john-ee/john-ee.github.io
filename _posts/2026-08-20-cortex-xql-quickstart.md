@@ -1,4 +1,12 @@
-# Cortex XDR XQL Quick Start Guide
+---
+title: "Cortex XQL Quickstart"
+date: 2025-08-20 11:00:00 +0000
+categories: [Windows, Troubleshooting]
+tags: [Cortex, XQL, quickstart]
+draft: false
+---
+
+## Intro
 
 XQL (XDR Query Language) is used in Cortex XDR/XSIAM's **Query Center / XQL Search** to query security and endpoint datasets. Like NQL, it's a pipeline of clauses chained with `|`, but the syntax differs in several key ways.
 
