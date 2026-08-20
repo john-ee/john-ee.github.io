@@ -14,4 +14,4 @@ Current personal goals :
 
 Socials :
 - GitHub: [john-ee](https://github.com/john-ee)
-- LinkedIn: [your handle](https://www.linkedin.com/in/john-nathan-hill-454aab10b/)
+- LinkedIn: [john-nathan-hill-454aab10b](https://www.linkedin.com/in/john-nathan-hill-454aab10b/)
