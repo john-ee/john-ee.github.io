@@ -109,7 +109,23 @@ Remove-Item -Path "C:\OSDCloud\*" -Recurse -Force -ErrorAction SilentlyContinue
 New-OSDCloudWorkspace -WorkspacePath C:\OSDCloud
 ```
 
-###23. Customize WinPE — drivers, silent config, branding
+### 2. (Optional) Include some packages or installers
+
+You can run your own scripts and installers by setting them in the right folder. Run this command : 
+```powershell
+New-OSDCloudWorkSpaceSetupCompleteTemplate
+```
+
+This will create the SetupComplete scripts templates in the folder `C:\OSDCloud\Config\Scripts\SetupComplete`. SetupComplete.cmd calls SetupComplete.ps1
+
+In this scenario, let's pre-install VLC. Download the installer, copy it in the folder `C:\OSDCloud\Config\Scripts\SetupComplete` and add this command to the script SetupComplete.ps1 : 
+```powershell
+Start-Process "$PSScriptRoot\vlc-3.0.23-win64.exe" -ArgumentList "/S"
+```
+
+This process is applicable to the GUI ISO.
+
+### 3. Customize WinPE — drivers, silent config, branding
 
 Edit the `-StartOSDCloud` parameters to match what you want deployed. This example: Windows 11, 25H2, Enterprise, French, volume-activated, silent wipe, auto-restart.
 
@@ -128,22 +144,6 @@ Edit-OSDCloudWinPE `
 - `-Restart` reboots into OOBE automatically once imaging completes.
 - `-OSActivation Volume` assumes KMS/MAK licensing (typical for Enterprise). Use `Retail` if devices activate via an embedded OEM key.
 - Set `-OSLanguage` explicitly — there's no prompt to pick it at runtime.
-
-### 3. (Optional) Include some packages or installers
-
-You can run your own scripts and installers by setting them in the right folder. Run this command : 
-```powershell
-New-OSDCloudWorkSpaceSetupCompleteTemplate
-```
-
-This will create the SetupComplete scripts templates in the folder `C:\OSDCloud\Config\Scripts\SetupComplete`. SetupComplete.cmd calls SetupComplete.ps1
-
-In this scenario, let's pre-install VLC. Download the installer, copy it in the folder `C:\OSDCloud\Config\Scripts\SetupComplete` and add this command to the script SetupComplete.ps1 : 
-```powershell
-Start-Process "$PSScriptRoot\vlc-3.0.23-win64.exe" -ArgumentList "/S"
-```
-
-This process is applicable to the GUI ISO.
 
 ### 4. Build the ISO
 
